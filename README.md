@@ -66,7 +66,7 @@ python calculators/discrete.py "(p -> q) | (r and -s) iff (t and ~u) implies v"
         ```
 2. download the repository
     - zip
-        - [click to download .zip](./archive/refs/heads/main.zip)
+        - [click to download .zip](https://github.com/chrisbcarl/chriscarl.tools.calculators/archive/refs/heads/main.zip)
         - extract zip
     - git
         ```bash
