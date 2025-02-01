@@ -61,6 +61,19 @@ python calculators/discrete.py "(p -> q) | (r and -s) iff (t and ~u) implies v"
         alias python='python3.12'
         # alias will disappear on new terminal, add to .bashrc or other means
         ```
+2. download the repository
+    - zip
+        - [click to download .zip](/chrisbcarl/chriscarl.tools.calculators/archive/refs/heads/main.zip)
+        - extract zip
+    - git
+        ```bash
+        git clone https://github.com/chrisbcarl/chriscarl.tools.calculators.git
+        ```
+3. run the code
+    - navigate to where you extracted or cloned
+    - open a terminal in that directory
+    - `python calculators/discrete.py --help`
+4. profit
 
 
 # Authors
