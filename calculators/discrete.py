@@ -584,15 +584,3 @@ if __name__ == '__main__':
     parser = get_parser()
     args = parser.parse_args()
     sys.exit(main(args.expressions, verbose=args.verbose, debug=args.debug, formats=args.formats, expand=args.expand, latex=args.latex, output_filepath=args.output_filepath))
-
-
-# confirmed bad eggs:
-# python calculators/discrete.py "and p"
-# python calculators/discrete.py "and and p"
-# python calculators/discrete.py "and not p"
-# python calculators/discrete.py "not not p"
-# python calculators/discrete.py "not not p and"
-# python calculators/discrete.py "p and"
-# python calculators/discrete.py "p and not"
-# python calculators/discrete.py "p and or"
-# python calculators/discrete.py "p and or p"
