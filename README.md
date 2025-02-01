@@ -1,5 +1,5 @@
-# chriscarl.tools.calculator
-Calculator-related tools.
+# chriscarl.tools.calculators
+Tools that are calculators.
 
 
 # Usage
