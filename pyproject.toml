@@ -1,0 +1,65 @@
+[tool.poetry]
+name = "chriscarl.tools.calculators"
+version = "0.0.0"
+description = "Tools that are calculators."
+authors = ["Chris Carl <chrisbcarl@outlook.com>"]
+readme = "README.md"
+package-mode = false
+packages = [{include = "chriscarl", from = "src"}]
+repository = "https://github.com/chrisbcarl/chriscarl.tools.calculators.git"
+classifiers = [
+    "Programming Language :: Python",
+    "Development Status :: 2 - Pre-Alpha",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+
+[tool.poetry.urls]
+# changelog = ""
+# homepage = "https://example.com"
+# documentation = "https://readthedocs.org"
+# "bug tracker" = "https://github.com/me/spam/issues"
+
+
+[tool.poetry.scripts]
+# dev = 'module:main'
+
+
+[tool.poetry.dependencies]
+python = ">=2.7.18"
+
+
+[tool.poetry.group.test.dependencies]
+
+
+[tool.poetry.group.dev.dependencies]
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+addopts = [
+    # https://docs.pytest.org/en/latest/explanation/goodpractices.html#test-discovery
+    # https://docs.pytest.org/en/latest/explanation/goodpractices.html#which-import-mode
+    # allows you to have 2 test file names that are exaclty the same like a/test_lib.py and b/test_lib.py
+    "--import-mode=importlib",
+]
+
+
+[[tool.mypy.overrides]]
+module = [
+    'parameterized',
+]
+ignore_missing_imports = true
+
+
+[tool.chriscarl]
+codeword = 'abacus'
+created = '2025-01-30'
+modified = '2025-01-31'

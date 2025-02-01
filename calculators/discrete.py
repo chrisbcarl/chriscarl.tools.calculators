@@ -124,7 +124,9 @@ def prettify_expression(expression):
 
 
 def shunting_yard(expression, verbose=False):
-    '''stolen from wikipedia'''
+    '''stolen from wikipedia
+    # FEATURE: shunting-yard-algorithm
+    '''
     sanitized = sanitize_expression(expression)
     if verbose:
         print(expression, sanitized)

@@ -11,5 +11,16 @@
             "program": "${file}",
             "console": "integratedTerminal"
         },
+        {
+            "name": "calculators.numeric",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/calculators/numeric.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-1", "1 + 1", "1 + (2 - 3) * (4 / 5) ** 6", "16 ^ 27 // (3 ** 2)",  // i dont like it autoformatting
+                "--verbose"
+            ]
+        },
     ]
 }
