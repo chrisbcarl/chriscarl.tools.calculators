@@ -8,7 +8,7 @@
         "**/*py*cache*": true,  // covers ./.pytest_cache and __pycache__
         "**/*.venv*": true,
     },
-    // "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\scripts\\python.exe",
+    "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\scripts\\python.exe",
     "[python]": {
         "editor.defaultFormatter": "eeyore.yapf",
         "editor.formatOnSave": true,

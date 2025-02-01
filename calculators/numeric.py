@@ -17,6 +17,9 @@ Updated:
                              numeric FEATURE: numeric-pow-intdiv
     2025-01-30 - chriscarl - numeric initial commit
 
+TODO:
+- test dirty input like mismatched parens and make sure it catches
+
 Notes:
 - 2025-01-30 18:00 - started
 - 2025-01-30 19:50 - main development ended. it just worked

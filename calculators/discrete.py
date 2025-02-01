@@ -1,28 +1,62 @@
-# started 2025-01-30 18:00
-# Edsger Dijkstra, shunting yard algorithm - https://en.wikipedia.org/wiki/Shunting_yard_algorithm
-# ended 19:50 for infix-postfix, pivoted to truth-tables
-# its the infix-postfix calculator + tokenizer + operator with one argument + truth table formatter
-# truth table filled with dummies at around 20:44 but not calculated yet
-# paused for a long while for food/entertainment, started again at 23:30
-# TODO: this is almost DEFINITELY bugged, would be worth tripple checking
-# TODO: surely I can just evaluate based on the reverse polish notation straight away, all i have to do is compute (hidden) neg values and just dont display them if not requested in the expression
-#       but the point is i'm computing the intermediate steps as well, thats the whole motivation here.
-# hard logical work done (not the display logics or appification) at 2025-01-31 01:16, elapsed time: 01:16 - 23:30 + 20:44-19:50 (roughly 4 hrs of work and its done...)
-# markdown like 5 mins later 01:24
-# t0html like 5 mins later 01:30
-# TODO: add latex, full cli arguments, pass files in, csv editor, etc.
-# TODO: if implies, add the inverse, converse, contrapositive
-# TODO: XOR
-# TODO: piping doesnt work on windows thanks to weird encoding problems,
-# TODO: specify encodings and encode correctly for html, etc.
-# TODO: single arrows, rather than doubles, add option for that
-# TODO: CHOKES on hardest one, not sure why (resolved in 30 secs due to OPERATORS text order, imp coming before implies was bad)
-# TODO: throw it bad stuff and make sure it can pick up that oh, this isnt an operator, or you threw two preps at once, or two ops in a row, etc.
+'''
+Author:      Chris Carl
+Date:        2025-01-30
+Email:       chrisbcarl@outlook.com
+
+Description:
+    Calculators are straightforward in parlance but tricky in computation and solved by converting their format from infix to postfix or prefix
+    The main algorithm is Edsger Dijkstra's Shunting Yard, which I shamelessly ripped for this one.
+    https://en.wikipedia.org/wiki/Shunting_yard_algorithm
+    A discrete calculator is different but the same, it just has different:
+        - operators and precedents
+        - parenthetical rules
+        - value is a truth table
+        - has no built-in eval
+        - etc
+
+Examples:
+    python calculators/discrete.py "p" "( q )" "!p" "p & q" "p | q" "p -> q" "p iff q" "p -> ~q" "p & q | r"
+    python calculators/discrete.py "p and q or r" "(p & q) | (r and -s)"
+    python calculators/discrete.py "(p & q) | (r and -s) iff t and not u"
+    python calculators/discrete.py "(p & q) | (r and -s) iff (t and not u) implies v"
+
+Updated:
+    2025-01-31 - chriscarl - discrete prettified to a BARE minimum
+    2025-01-30 - chriscarl - discrete initial commit
+
+TODO:
+- add latex, full cli arguments, pass files in, csv editor, etc.
+- if implies, add the inverse, converse, contrapositive
+- tripple check the tt's
+- test dirty input like mismatched parens and make sure it catches, throw it bad stuff and make sure it can pick up that oh, this isnt an operator, or you threw two preps at once, or two ops in a row, etc.
+- maybe simplify the logic somewhere, surely I can just evaluate based on the reverse polish notation straight away, i just didnt because i need to build up to the final,
+    - all i have to do is compute (hidden) neg values and just dont display them if not requested in the expression
+- specify encodings and encode correctly for html, etc. piping doesnt work on windows thanks to weird encoding problems
+- single arrows, rather than doubles, add option for that
+
+Notes:
+- 2025-01-30 18:00 - started
+- 2025-01-30 19:50 - infix-postfix development ended
+- 2025-01-30 20:44 - truth table filled with dummies, no calcs, paused
+- 2025-01-30 23:30 - resumed after eating food
+- 2025-01-31 01:16 - hard logical work done (not the display logics or appification), elapsed time: 01:16 - 23:30 + 20:44-19:50 (roughly 4 hrs of work and its done...)
+- 2025-01-31 01:24 - markdown like 5 mins later 01:24
+- 2025-01-31 01:30 - t0html like 5 mins later 01:30
+'''
+# stdlib
+import os
+import sys
+import io
 import re
 import copy
-import pandas as pd
+import json
+import argparse
 from collections import OrderedDict
 from typing import List, Dict, Optional, Tuple
+
+SCRIPT_DIRPATH = os.path.dirname(__file__)
+SCRIPT_FILEPATH = __file__
+SCRIPT_FILENAME = os.path.splitext(os.path.basename(SCRIPT_FILEPATH))[0]
 
 OPERATORS = {
     'NEG': ['¬', '-', '!', '~', 'not'],
@@ -31,6 +65,14 @@ OPERATORS = {
     'IMP': ['⇒', '->', '=>', 'implies', 'imp'],
     'IFF': ['⇔', '<->', '<=>', 'iff'],
 }
+LATEX = {
+    'NEG': '\\lneg',
+    'CON': '\\land',
+    'DIS': '\\lor',
+    'IMP': '\\rightarrow',
+    'IFF': '\\leftrightarrow',
+}
+UTF8 = {k: ord(v[0]) for k, v in OPERATORS.items()}
 PRECEDENCE = {
     0: 'NEG',
     1: 'CON',
@@ -38,6 +80,7 @@ PRECEDENCE = {
     3: 'IMP',
     4: 'IFF'
 }
+HTML_FMT = '&#x{hex};'
 OPERATOR_TO_PRECEDENCE = {v: k for k, v in PRECEDENCE.items()}
 TRUTH_TABLES = {
     'NEG': {
@@ -338,20 +381,73 @@ def to_html(tt, minimize=False):
     return ('' if minimize else '\n').join([token.strip() if minimize else token for token in tokens])
 
 
+def to_latex(tt):
+    raise NotImplementedError('i havent tried actually making a proper .tex document by hand yet. check back later.')
 
-verbose = False
-expressions = ['p', '( q )', '!p', 'p & q', 'p | q', 'p -> q', 'p iff q', 'p -> ~q', 'p & q | r', 'p and q or r', '(p & q) | (r and -s)', '(p & q) | (r and -s) iff t and not u', '(p & q) | (r and -s) iff (t and not u) implies v']
-with open('sandbox.md', 'w', encoding='utf-8') as w:
+
+class NiceFormatter(argparse.RawDescriptionHelpFormatter, argparse.ArgumentDefaultsHelpFormatter):
+    pass
+
+
+FORMATS = ['md', 'html', 'json', 'latex']
+DEFAULT_FORMATS = [FORMATS[0]]
+
+
+def get_parser():
+    # type: () -> argparse.ArgumentParser
+    parser = argparse.ArgumentParser(prog=SCRIPT_FILENAME, description=__doc__, formatter_class=NiceFormatter)
+    parser.add_argument('expressions', type=str, nargs='+', help='math expressions, you can pass multiple with quotes')
+    parser.add_argument('--verbose', '-v', action='store_true', help='show work on the way to answering the question')
+    parser.add_argument('--debug', '-d', action='store_true', help='show LOTS of work on the way to answering the question')
+    parser.add_argument('--formats', '-f', type=str, nargs='+', default=DEFAULT_FORMATS, choices=FORMATS, help='chose output formats, multiple supported')
+    parser.add_argument('--expand', action='store_true', help='by default, output is minified')
+    parser.add_argument('--latex', action='store_true', help='output the symbols in md, html, json AS LaTeX?')
+    parser.add_argument('--output-filepath', type=str, help='provide an output file? same output in console goes to the file')
+    return parser
+
+
+def multi_print(msg, fps=None):
+    fps = fps or [sys.stdout]
+    for fp in fps:
+        print(msg, file=fp)
+
+
+
+def main(expressions, verbose=False, debug=False, formats=None, expand=False, latex=False, output_filepath=None):
+    # type: (List[str], bool, bool, Optional[List[str]], bool, bool, Optional[str]) -> int
+    formats = formats or DEFAULT_FORMATS
+    fp = None
+    if output_filepath:
+        dirname = os.path.dirname(output_filepath)
+        if not os.path.isdir(dirname):
+            os.makedirs(dirname)
+        fp = open(output_filepath, 'w', encoding='utf-8')
+    fps = [sys.stdout] if fp is None else [sys.stdout, fp]
+
     for expression in expressions:
-        reverse_polish_notation = shunting_yard(expression, verbose=verbose)
-        tt = evaluate(expression, reverse_polish_notation, verbose=verbose)
+        if verbose:
+            multi_print(expression, fps=fps)
+        rpn = shunting_yard(expression, verbose=debug)
+        if verbose:
+            multi_print(f'\tinfix to postfix:   {rpn}', fps=fps)
+        tt = evaluate(expression, rpn, verbose=debug)
+        if verbose:
+            multi_print(f'\traw decomposition:  {list(tt.keys())}', fps=fps)
         tt_pretty = OrderedDict([(prettify_expression(k), v) for k, v in tt.items()])
-        print(pd.DataFrame(tt_pretty))
-        print(to_markdown(tt_pretty))
-        print(to_html(tt_pretty, minimize=True))
-        print('\n\n')
+        for fmt in formats:
+            if fmt == 'md':
+                out = to_markdown(tt_pretty)
+            elif fmt == 'html':
+                out = to_html(tt_pretty, minimize=not expand)
+            elif fmt == 'json':
+                out = json.dumps(tt_pretty, indent=4 if expand else None)
+            multi_print(out, fps=fps)
+        multi_print('\n\n', fps=fps)
+    if fp:
+        fp.close()
 
-        # print(pd.DataFrame(tt_pretty), file=w)
-        print(to_markdown(tt_pretty), file=w)
-        # print(to_html(tt_pretty, minimize=True), file=w)
-        print('\n\n', file=w)
+
+if __name__ == '__main__':
+    parser = get_parser()
+    args = parser.parse_args()
+    sys.exit(main(args.expressions, verbose=args.verbose, debug=args.debug, formats=args.formats, expand=args.expand, latex=args.latex, output_filepath=args.output_filepath))
