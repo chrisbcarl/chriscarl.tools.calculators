@@ -22,5 +22,17 @@
                 "--verbose"
             ]
         },
+        {
+            "name": "calculators.discrete",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/calculators/discrete.py",
+            "console": "integratedTerminal",
+            "args": [
+                "q and p and neg neg r",  // had a bug
+                // "p and q or r", "(p & q) | (r and -s)",  // i dont like it autoformatting
+                "--formats", "html", "md", "json", "--expand", "--latex"
+            ]
+        },
     ]
 }

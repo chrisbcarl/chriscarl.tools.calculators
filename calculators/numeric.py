@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# coding: utf-8
 '''
 Author:      Chris Carl
 Date:        2025-01-30
@@ -10,7 +12,10 @@ Description:
 
 Examples:
     python calculators/numeric.py "-1"
-    python calculators/numeric.py "-1" "1 + 1" "1 + (2 - 3) * (4 / 5) ** 6" "16 ^ 27 // (3 ** 2)"
+    - run lots of expressions at once
+        python calculators/numeric.py "-1" "1 + 1" "1 + (2 - 3) * (4 / 5) ** 6" "16 ^ 27 // (3 ** 2)"
+    - run and "show your work"
+        python calculators/numeric.py "1 + (2 - 3) * (4 / 5) ** 6" "16 ^ 27 // (3 ** 2)" --verbose --compare
 
 Updated:
     2025-01-31 - chriscarl - numeric prettified to a BARE minimum
@@ -220,7 +225,7 @@ def main(expressions, verbose=False, compare=False):
                     print(f'\tpython eval:        {eeval}')
                 assert eeval == val, f'{expression} != {val}'
             except TypeError as te:
-                print('couldnt evaluate using eval, got', te)
+                print('\tcouldnt evaluate using eval (likely a float/bitwise operation thing)', te)
         if verbose:
             print(f'\tvalue:              {val}')
         else:

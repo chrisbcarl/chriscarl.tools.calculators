@@ -5,9 +5,30 @@ These types of projects are typically of low "software" quality but of high "rea
 
 
 # Usage
+- calculators/numeric
 ```bash
-python calculators/numeric.py  "1+1" "16 ^ 27 // (3 ** 2)" -c -v
-python calculators/discrete.py "1+1" "16 ^ 27 // (3 ** 2)" -c -v
+# run multiple calculations and "show your work" and sanity check
+python calculators/numeric.py  "1+1" "16 ^ 27 // (3 ** 2)" --verbose --compare
+
+# ommit args for plain output
+python calculators/discrete.py "1+1" "16 ^ 27 // (3 ** 2)"
+```
+- calculators/discrete
+```bash
+# run multiple calculations, mix and match operator symbols
+python calculators/discrete.py "p" "p & q" "( q )" "p | q" "!p" "p -> q" "not q" "p iff q" "p|p" "p -> ~q" "q*~q" "p & q | r"
+
+# output one calculation as only one csv
+python calculators/discrete.py "a * b + c * d" --formats csv --latex --output-filepath "/tmp/out.csv"
+
+# output one calculation as working latex html
+python calculators/discrete.py "p and q or r" "(p & q) <-> (r imp -s)" --formats html --latex --expand --output-filepath "/tmp/out.html"
+
+# output one calculation as html, markdown, json, csv, use latex rather than unicode, expand the json and the html, and save all output (messy as it is)
+python calculators/discrete.py "p and q or r" "(p & q) <-> (r imp -s)" --formats html md json csv --latex --expand --output-filepath "/tmp/out.txt"
+
+# really nasty one
+python calculators/discrete.py "(p -> q) | (r and -s) iff (t and ~u) implies v"
 ```
 
 
