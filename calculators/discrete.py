@@ -27,6 +27,7 @@ Warnings:
     piping can fail if the shell it's running in is not in utf-8 encoding or higher ex) python calculators/discrete.py > out.file  # on windows fails due to cp1252
 
 Updated:
+    2025-02-03 - chriscarl - FEATURE: discrete-?-or
     2025-02-01 - chriscarl - discrete added --latex column output, csv, html katex, json, etc.
                              discrete hardened against bad eggs
                              discrete FIX: had a few false negatives (as of 01:04)
@@ -73,7 +74,13 @@ SCRIPT_FILENAME = os.path.splitext(os.path.basename(SCRIPT_FILEPATH))[0]
 OPERATORS = {
     'NOT': ['¬', '-', '!', '~', 'not', 'neg'],
     'CON': ['∧', '&', '*', 'and'],
-    'DIS': ['∨', '|', '+', 'or'],
+    'DIS': [
+        '∨',
+        '|',
+        '+',
+        '?',  # FEATURE: discrete-?-or
+        'or'
+    ],
     'IMP': ['→', '⇒', '⇾', '->', '=>', 'implies', 'imp'],
     'IFF': ['↔', '⇔', '⇿', '<->', '<=>', 'iff'],
 }

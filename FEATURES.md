@@ -38,5 +38,6 @@ Features are a way to "link" ideas together across multiple files. For example, 
 # Prod
 |version |author |deployed |created |feature-name |description |
 --- | --- | --- | --- | --- | ---
+|0.0.0|chriscarl|2025-02-03|2025-02-03|`FEATURE: discrete-?-or`|i copied and pasted from a PDF (p∧q) and it translated in shell as p?q, but either works and its symantically correct!|
 |0.0.0|chriscarl|2025-01-30|2025-01-31|`FEATURE: numeric-pow-intdiv`|straightfoward to add other ops|
 |0.0.0|chriscarl|2025-01-30|2025-01-30|`FEATURE: shunting-yard-algorithm`|implemented the shunting yard algorithm from wikipedia pseudocode which turned out very nice|
