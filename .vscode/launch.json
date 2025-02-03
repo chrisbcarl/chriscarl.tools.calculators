@@ -29,7 +29,8 @@
             "program": "${workspaceFolder}/calculators/discrete.py",
             "console": "integratedTerminal",
             "args": [
-                "q and p ", " neg r",  "--asone",
+                "p iff q AND q -> r AND !r AND !q -> !p AND q", // BUG:
+                // "q and p ", " neg r",  "--asone",
                 // "q and p and neg neg r",  // had a bug
                 // "p and q or r", "(p & q) | (r and -s)",  // i dont like it autoformatting
                 "--formats", "html", "md", "json", "--expand", "--latex"

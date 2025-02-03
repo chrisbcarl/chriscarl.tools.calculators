@@ -35,6 +35,7 @@ Updated:
     2025-01-30 - chriscarl - discrete initial commit
 
 TODO:
+- FEATURE: discrete-parenthesis
 - FEATURE: discrete--asone
 - tripple check the tt's
 - if implies, add the inverse, converse, contrapositive

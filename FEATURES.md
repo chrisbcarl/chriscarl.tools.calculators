@@ -26,6 +26,7 @@ Features are a way to "link" ideas together across multiple files. For example, 
 |version |author |deployed |created |feature-name |description |
 --- | --- | --- | --- | --- | ---
 |0.~0~.~0~|author|20xx-yy-zz|20xx-yy-zz|`FEATURE: xxx`|whatever|
+|0.0.0|chriscarl|20xx-yy-zz|20xx-yy-zz|`FEATURE: discrete-parenthesis`|add back the parenthesis, understanding that `)(` is illegal|
 |0.0.0|chriscarl|20xx-yy-zz|20xx-yy-zz|`FEATURE: discrete--asone`|add the --asone flag to support that usage|
 
 
