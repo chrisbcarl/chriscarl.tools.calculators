@@ -35,6 +35,7 @@ Updated:
     2025-01-30 - chriscarl - discrete initial commit
 
 TODO:
+- FEATURE: discrete--asone
 - tripple check the tt's
 - if implies, add the inverse, converse, contrapositive
 - add .tex latex, pass files in
@@ -62,7 +63,7 @@ import csv
 import pprint
 import argparse
 from collections import OrderedDict
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional, Tuple, Any
 
 SCRIPT_DIRPATH = os.path.dirname(__file__)
 SCRIPT_FILEPATH = __file__
@@ -84,13 +85,7 @@ LATEX = {
     'IFF': '\\leftrightarrow',
 }
 UTF8 = {k: ord(v) for k, v in UNICODE_OPERATORS.items()}
-PRECEDENCE = {
-    0: 'NOT',
-    1: 'CON',
-    2: 'DIS',
-    3: 'IMP',
-    4: 'IFF'
-}
+PRECEDENCE = {0: 'NOT', 1: 'CON', 2: 'DIS', 3: 'IMP', 4: 'IFF'}
 HTML_FMT = '&#x{hex};'
 OPERATOR_TO_PRECEDENCE = {v: k for k, v in PRECEDENCE.items()}
 TRUTH_TABLES = {
@@ -127,7 +122,7 @@ TRUTH_TABLES = {
 
 def truth(p, op, /, q=None, default=(None, None)):  # syntax for positional passable, but the previous are definitley posiitonal
     if q is None:
-        return TRUTH_TABLES.get(op, default)[(p,)]
+        return TRUTH_TABLES.get(op, default)[(p, )]
     return TRUTH_TABLES.get(op, default)[(p, q)]
 
 
@@ -369,7 +364,7 @@ def evaluate(expression, rpn, verbose=True, debug=False):
         runaway += 1
         # if runaway > len(original_rpn) ** 2 - 1:
         #     print('wtf')
-        if runaway > len(original_rpn) ** 2:
+        if runaway > len(original_rpn)**2:
             print(f'ERROR: unable to parse expression {original_expression!r} due to {runaway} runaway iterations! Check malformat?', file=sys.stderr)
             sys.exit(1)
             # raise RecursionError()
@@ -452,37 +447,35 @@ def to_html(tt, expand=True, latex=False):
         # katex rather than mathjax, so we need to add a bunch of boilerplate so that it actually runs...
         # https://stackoverflow.com/a/65540803
         tokens = [
-'<!DOCTYPE html>',
-'<html>',
-'    <head>',
-'        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" integrity="sha384-zh0CIslj+VczCZtlzBcjt5ppRcsAmDnRem7ESsYwWwg3m/OaJ2l4x7YBZl9Kxxib" crossorigin="anonymous">',
-'        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js" integrity="sha384-Rma6DA2IPUwhNxmrB/7S3Tno0YY7sFu9WSYMCuulLhIqYSGZ2gKCJWIqhBWqMQfh" crossorigin="anonymous"></script>',
-'        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>',
-'    </head>',
-'    <body>',
-        ] + [
-            f'        {tag}' for tag in tokens
-        ] + [
-'    </body>',
-# https://stackoverflow.com/a/56038155
-# https://katex.org/docs/autorender.html
-'<script>',
-'    document.addEventListener("DOMContentLoaded", function() {',
-'        renderMathInElement(document.body, {',
-'          // customised options',
-'          // auto-render specific keys, e.g.:',
-'          delimiters: [',
-'              {left: "$$", right: "$$", display: true},',
-'              {left: "$", right: "$", display: false},',
-'              {left: "\\(", right: "\\)", display: false},',
-'              {left: "\\[", right: "\\]", display: true}',
-'          ],',
-'          // rendering keys, e.g.:',
-'          throwOnError : false',
-'        });',
-'    });',
-'</script>',
-'</html>',
+            '<!DOCTYPE html>',
+            '<html>',
+            '    <head>',
+            '        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" integrity="sha384-zh0CIslj+VczCZtlzBcjt5ppRcsAmDnRem7ESsYwWwg3m/OaJ2l4x7YBZl9Kxxib" crossorigin="anonymous">',
+            '        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js" integrity="sha384-Rma6DA2IPUwhNxmrB/7S3Tno0YY7sFu9WSYMCuulLhIqYSGZ2gKCJWIqhBWqMQfh" crossorigin="anonymous"></script>',
+            '        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>',
+            '    </head>',
+            '    <body>',
+        ] + [f'        {tag}' for tag in tokens] + [
+            '    </body>',
+            # https://stackoverflow.com/a/56038155
+            # https://katex.org/docs/autorender.html
+            '<script>',
+            '    document.addEventListener("DOMContentLoaded", function() {',
+            '        renderMathInElement(document.body, {',
+            '          // customised options',
+            '          // auto-render specific keys, e.g.:',
+            '          delimiters: [',
+            '              {left: "$$", right: "$$", display: true},',
+            '              {left: "$", right: "$", display: false},',
+            '              {left: "\\(", right: "\\)", display: false},',
+            '              {left: "\\[", right: "\\]", display: true}',
+            '          ],',
+            '          // rendering keys, e.g.:',
+            '          throwOnError : false',
+            '        });',
+            '    });',
+            '</script>',
+            '</html>',
         ]
     return ('\n' if expand else '').join([token if expand else token.strip() for token in tokens])
 
@@ -531,18 +524,37 @@ def get_parser():
     parser.add_argument('--formats', '-f', type=str, nargs='+', default=DEFAULT_FORMATS, choices=FORMATS, help='chose output formats, multiple supported')
     parser.add_argument('--expand', action='store_true', help='by default, output is minified')
     parser.add_argument('--latex', action='store_true', help='output the symbols in md, html, json AS LaTeX?')
+    parser.add_argument('--asone', action='store_true', help='plot all expressions as one table rather than iterating through all and tables for each?')
     parser.add_argument('--output-filepath', type=str, help='provide an output file? same output in console goes to the file')
     return parser
 
 
 def multi_print(msg, fps=None):
+    # type: (str, Optional[List[io.TextIOWrapper | Any]]) -> None
     fps = fps or [sys.stdout]
     for fp in fps:
         print(msg, file=fp)
 
 
-def main(expressions, verbose=False, debug=False, formats=None, expand=True, latex=False, output_filepath=None):
-    # type: (List[str], bool, bool, Optional[List[str]], bool, bool, Optional[str]) -> int
+def print_tt(tt, formats, expand=True, latex=False, fps=None):
+    # type: (T_TRUTH_TABLE, list, bool, bool, Optional[List[io.TextIOWrapper | Any]]) -> None
+    tt_pretty = OrderedDict([(prettify_expression(k), v) for k, v in tt.items()])
+    for fmt in formats:
+        if fmt == 'md':
+            out = to_markdown(tt_pretty, latex=latex)
+        elif fmt == 'html':
+            out = to_html(tt_pretty, latex=latex, expand=expand)
+        elif fmt == 'json':
+            out = to_json(tt_pretty, latex=latex, expand=expand)
+        elif fmt == 'csv':
+            out = to_csv(tt_pretty, latex=latex)
+        elif fmt == 'latex':
+            out = to_latex(tt_pretty, expand=expand)
+        multi_print(out, fps=fps)
+
+
+def main(expressions, verbose=False, debug=False, formats=None, expand=True, latex=False, asone=False, output_filepath=None):
+    # type: (List[str], bool, bool, Optional[List[str]], bool, bool, bool, Optional[str]) -> int
     formats = formats or DEFAULT_FORMATS
     fp = None
     if output_filepath:
@@ -550,37 +562,56 @@ def main(expressions, verbose=False, debug=False, formats=None, expand=True, lat
         if not os.path.isdir(dirname):
             os.makedirs(dirname)
         fp = open(output_filepath, 'w', encoding='utf-8')
-    fps = [sys.stdout] if fp is None else [sys.stdout, fp]
+    fps = [sys.stdout] if fp is None else [sys.stdout, fp]  # type: List[io.TextIOWrapper | Any]
 
-    for expression in expressions:
-        if verbose:
-            multi_print(expression, fps=fps)
-        rpn = shunting_yard(expression, verbose=verbose)
-        if verbose:
-            multi_print(f'\tinfix to postfix:   {rpn}', fps=fps)
-        tt = evaluate(expression, rpn, verbose=verbose, debug=debug)
+    if asone:
+        raise NotImplementedError('BUG: say you merge two tts, but one was generated on 2 props, the other on 1 new prop. total of 3 props, none of the TT is right depth')
+        ttone = OrderedDict()
+        for expression in expressions:
+            if verbose:
+                multi_print(expression, fps=fps)
+            rpn = shunting_yard(expression, verbose=verbose)
+            if verbose:
+                multi_print(f'\tinfix to postfix:   {rpn}', fps=fps)
+            tt = evaluate(expression, rpn, verbose=verbose, debug=debug)
+            ttone.update(tt)
+
         if debug:
-            pprint.pprint(tt, indent=2, width=999999)
+            pprint.pprint(ttone, indent=2, width=999999)
         if verbose:
-            multi_print(f'\traw decomposition:  {list(tt.keys())}', fps=fps)
-        tt_pretty = OrderedDict([(prettify_expression(k), v) for k, v in tt.items()])
-        for fmt in formats:
-            if fmt == 'md':
-                out = to_markdown(tt_pretty, latex=latex)
-            elif fmt == 'html':
-                out = to_html(tt_pretty, latex=latex, expand=expand)
-            elif fmt == 'json':
-                out = to_json(tt_pretty, latex=latex, expand=expand)
-            elif fmt == 'csv':
-                out = to_csv(tt_pretty, latex=latex)
-            elif fmt == 'latex':
-                out = to_latex(tt_pretty, expand=expand)
-            multi_print(out, fps=fps)
+            multi_print(f'\traw decomposition:  {list(ttone.keys())}', fps=fps)
+        print_tt(ttone, formats, expand=expand, latex=latex, fps=fps)
+    else:
+        for expression in expressions:
+            if verbose:
+                multi_print(expression, fps=fps)
+            rpn = shunting_yard(expression, verbose=verbose)
+            if verbose:
+                multi_print(f'\tinfix to postfix:   {rpn}', fps=fps)
+            tt = evaluate(expression, rpn, verbose=verbose, debug=debug)
+            if debug:
+                pprint.pprint(tt, indent=2, width=999999)
+            if verbose:
+                multi_print(f'\traw decomposition:  {list(tt.keys())}', fps=fps)
+            print_tt(tt, formats, expand=expand, latex=latex, fps=fps)
+
     if fp:
         fp.close()
+    return 0
 
 
 if __name__ == '__main__':
     parser = get_parser()
     args = parser.parse_args()
-    sys.exit(main(args.expressions, verbose=args.verbose, debug=args.debug, formats=args.formats, expand=args.expand, latex=args.latex, output_filepath=args.output_filepath))
+    sys.exit(
+        main(
+            args.expressions,
+            verbose=args.verbose,
+            debug=args.debug,
+            formats=args.formats,
+            expand=args.expand,
+            latex=args.latex,
+            asone=args.asone,
+            output_filepath=args.output_filepath
+        )
+    )
