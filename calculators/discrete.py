@@ -412,7 +412,7 @@ def pretty_expressions_to_latex(expressions, start='$', stop='$'):
         for op, symbol in UNICODE_OPERATORS.items():
             tex = LATEX[op]
             expression = expression.replace(symbol, tex)
-        latex = f'{(start + " ") if start else ""}{expression}{(" " + stop) if stop else ""}'
+        latex = f'{start or ""}{expression}{stop or ""}'
         latex = latex.replace('lnot', 'lnot ')  # otherwise you get \lnotp which is no good
         latexes.append(latex)
     return latexes
